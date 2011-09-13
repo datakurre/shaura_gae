@@ -6,21 +6,22 @@ from zope.interface import implements
 
 from pyramid.threadlocal import get_current_registry
 
-from shaura_core.interfaces import IObject, IObjectManager
+from shaura_core.interfaces import IObject
+from shaura_core.datastore import ObjectManagerBase
 from shaura_gae.interfaces import IProperty
 
 from google.appengine.ext import db
 
 
 def createStringProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     return db.StringProperty(
         name=field.__name__, required=field.required,
         validator=field.validate)
 
 
 def createEncodedStringProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     # WONTFIX: some zope.schema fields "require" encoded strings instead of
     # unicode strings, but GAE stores and returns all string properties as
     # unicode
@@ -35,21 +36,21 @@ def createEncodedStringProperty(field):
 
 
 def createTextProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     return db.TextProperty(
         name=field.__name__, required=field.required,
         validator=field.validate)
 
 
 def createDateTimeProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     return db.DateTimeProperty(
         name=field.__name__, required=field.required,
         validator=field.validate)
 
 
 def createLinkProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     # WONTFIX: some zope.schema fields "require" encoded strings instead of
     # unicode strings, but GAE stores and returns all string properties as
     # unicode.
@@ -64,7 +65,7 @@ def createLinkProperty(field):
 
 
 def createBooleanProperty(field):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     return db.BooleanProperty(
         name=field.__name__, required=field.required,
         validator=field.validate)
@@ -77,7 +78,7 @@ def createListProperty(field):
 
 
 def createUnicodeListProperty(field, value_type):
-    # FIXME: zope.schema fields are validated unbound
+    # WONTFIX: zope.schema fields are validated unbound
     return db.ListProperty(unicode, name=field.__name__,
                            validator=field.validate)
 
@@ -108,9 +109,8 @@ class Model(SchemaPropertiedModel):
     implements(IObject)
 
 
-class ObjectManager(object):
+class ObjectManager(ObjectManagerBase):
     """Database access utility"""
-    implements(IObjectManager)
 
     def __call__(self, **kwargs):
         kind = None

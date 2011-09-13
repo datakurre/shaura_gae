@@ -39,9 +39,9 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
 
         @when("I save it")
         def I_save_it(self):
-            import shaura_core.events
-            event = shaura_core.events.ObjectCreatedEvent(self.task)
-            self.layer.config.registry.notify(event)
+            from shaura_core.interfaces import IObjectManager
+            manager = self.layer.config.registry.getUtility(IObjectManager)
+            manager.add(self.task)
 
         @then("I can retrieve it from AppEngine datastore")
         def I_can_retrieve_it_from_AppEngine_datastore(self):
@@ -72,9 +72,9 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
 
         @when("I save it")
         def I_save_it(self):
-            import shaura_core.events
-            event = shaura_core.events.ObjectModifiedEvent(self.task)
-            self.layer.config.registry.notify(event)
+            from shaura_core.interfaces import IObjectManager
+            manager = self.layer.config.registry.getUtility(IObjectManager)
+            manager.update(self.task)
 
         @then("I can retrieve it from AppEngine datastore again")
         def I_can_retrieve_it_from_AppEngine_datastore_again(self):
@@ -104,9 +104,9 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
 
         @when("I delete it")
         def I_delete_it(self):
-            import shaura_core.events
-            event = shaura_core.events.ObjectObsoletedEvent(self.task)
-            self.layer.config.registry.notify(event)
+            from shaura_core.interfaces import IObjectManager
+            manager = self.layer.config.registry.getUtility(IObjectManager)
+            manager.delete(self.task)
 
         @then("I cannot retrieve it from AppEngine datastore anymore")
         def I_cannot_retrieve_it_from_AppEngine_datastore_anymore(self):
