@@ -1,0 +1,90 @@
+<configure xmlns="http://pylonshq.com/pyramid">
+
+  <include package="pyramid_zcml"/>
+
+  <!-- property field adapters -->
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IId"
+    factory=".db.createEncodedStringProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IASCIILine"
+    factory=".db.createEncodedStringProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.ITextLine"
+    factory=".db.createStringProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IText"
+    factory=".db.createTextProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IDatetime"
+    factory=".db.createDateTimeProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IURI"
+    factory=".db.createLinkProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IBool"
+    factory=".db.createBooleanProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IList"
+    factory=".db.createListProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IList
+         zope.schema.interfaces.IId"
+    factory=".db.createUnicodeListProperty"
+    />
+
+  <adapter
+    provides=".interfaces.IProperty"
+    for="zope.schema.interfaces.IList
+         zope.schema.interfaces.IURI"
+    factory=".db.createUnicodeListProperty"
+    />
+
+  <!-- object management -->
+
+  <utility
+    provides="shaura_core.interfaces.IObjectManager"
+    factory=".db.ObjectManager"
+    />
+
+  <subscriber
+    for="shaura_core.interfaces.IObjectCreatedEvent"
+    handler=".db.putCreatedObject"
+    />
+
+  <subscriber
+    for="shaura_core.interfaces.IObjectModifiedEvent"
+    handler=".db.saveModifiedObject"
+    />
+
+  <subscriber
+    for="shaura_core.interfaces.IObjectObsoletedEvent"
+    handler=".db.deleteObsoletedObject"
+    />
+
+</configure>
