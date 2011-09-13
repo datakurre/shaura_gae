@@ -6,8 +6,9 @@ from zope.interface import implements
 
 from pyramid.threadlocal import get_current_registry
 
-from shaura_core.interfaces import IObject
-from shaura_core.datastore import ObjectManagerBase
+from shaura_core.interfaces import IObject, IObjectManager
+from shaura_core.events import\
+    ObjectCreatedEvent, ObjectModifiedEvent, ObjectObsoletedEvent
 from shaura_gae.interfaces import IProperty
 
 from google.appengine.ext import db
@@ -109,8 +110,9 @@ class Model(SchemaPropertiedModel):
     implements(IObject)
 
 
-class ObjectManager(ObjectManagerBase):
+class ObjectManager(object):
     """Database access utility"""
+    implements(IObjectManager)
 
     def __call__(self, **kwargs):
         kind = None
@@ -141,6 +143,24 @@ class ObjectManager(ObjectManagerBase):
 
         for result in query:
             yield result
+
+    def add(self, obj):
+        """Add object to datastore"""
+        registry = get_current_registry()
+        event = ObjectCreatedEvent(obj)
+        registry.notify(event)
+
+    def update(self, obj):
+        """Update object on datastore"""
+        registry = get_current_registry()
+        event = ObjectModifiedEvent(obj)
+        registry.notify(event)
+
+    def delete(self, obj):
+        """Delete object from datastore"""
+        registry = get_current_registry()
+        event = ObjectObsoletedEvent(obj)
+        registry.notify(event)
 
 
 def putCreatedObject(event):
