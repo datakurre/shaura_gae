@@ -38,7 +38,7 @@ class AppEngineLayer(PyramidLayer):
 
     @classmethod
     def tearDown(cls):
-        testing.tearDown()
+        pass
 
     @classmethod
     def testSetUp(cls):
