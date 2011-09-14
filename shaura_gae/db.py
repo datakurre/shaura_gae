@@ -150,11 +150,15 @@ class ObjectManager(object):
         event = ObjectCreatedEvent(obj)
         registry.notify(event)
 
+        event.target.put()
+
     def update(self, obj):
         """Update object on datastore"""
         registry = get_current_registry()
         event = ObjectModifiedEvent(obj)
         registry.notify(event)
+
+        event.target.save()
 
     def delete(self, obj):
         """Delete object from datastore"""
@@ -162,17 +166,4 @@ class ObjectManager(object):
         event = ObjectObsoletedEvent(obj)
         registry.notify(event)
 
-
-def putCreatedObject(event):
-    """Object created lifecycle event"""
-    event.target.put()
-
-
-def saveModifiedObject(event):
-    """Object modified lifecycle event"""
-    event.target.save()
-
-
-def deleteObsoletedObject(event):
-    """Object obsoleted lifecycle event"""
-    event.target.delete()
+        event.target.delete()

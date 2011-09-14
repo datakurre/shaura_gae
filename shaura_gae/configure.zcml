@@ -72,19 +72,4 @@
     factory=".db.ObjectManager"
     />
 
-  <subscriber
-    for="shaura_core.interfaces.IObjectCreatedEvent"
-    handler=".db.putCreatedObject"
-    />
-
-  <subscriber
-    for="shaura_core.interfaces.IObjectModifiedEvent"
-    handler=".db.saveModifiedObject"
-    />
-
-  <subscriber
-    for="shaura_core.interfaces.IObjectObsoletedEvent"
-    handler=".db.deleteObsoletedObject"
-    />
-
 </configure>
