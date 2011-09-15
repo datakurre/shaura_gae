@@ -93,7 +93,6 @@ class Story(unittest.TestCase):
             self.assertEquals(len(self.results), 1)
             self.assertEquals(self.task.key(), self.results[0].key())
             self.assertEquals(self.task.title, self.results[0].title)
-            self.assertTrue(False)
 
     @scenario("Delete a saved object from AppEngine datastore")
     class ScenarioC(Scenario):
