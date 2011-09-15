@@ -9,7 +9,7 @@ from shaura_gae import testing
 
 @story(id="17916955", title=(u"As developer I want to store "
                              u"'zope.schema'-modeled data on AppEngine"))
-class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
+class Story(unittest.TestCase):
 
     layer = testing.AppEngineLayer
 
@@ -20,10 +20,10 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
             clause(self)
 
     @scenario("Save a new object into AppEngine datastore")
-    class Save_a_new_object_into_AppEngine_datastore(Scenario):
+    class ScenarioA(Scenario):
 
         @given("I've got a new 'zope.schema'-modeled object")
-        def Ive_got_a_new_zopeschemamodeled_object(self):
+        def given(self):
             import zope.interface
             import zope.schema
 
@@ -38,13 +38,13 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
             self.task = Task(title=u"Custom title")
 
         @when("I save it")
-        def I_save_it(self):
+        def when(self):
             from shaura_core.interfaces import IObjectManager
             manager = self.layer.config.registry.getUtility(IObjectManager)
             manager.add(self.task)
 
         @then("I can retrieve it from AppEngine datastore")
-        def I_can_retrieve_it_from_AppEngine_datastore(self):
+        def then(self):
             from shaura_core.interfaces import IObjectManager
 
             manager = self.layer.config.registry.getUtility(IObjectManager)
@@ -59,25 +59,25 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
             self.assertEquals(self.task.title, self.results[0].title)
 
     @scenario("Modify a saved object in AppEngine datastore")
-    class Modify_a_saved_object_in_AppEngine_datastore(Scenario):
+    class ScenarioB(Scenario):
 
         @given("I've retrieved a 'zope.schema'-modeled object from datastore")
-        def Ive_retrieved_a_zopeschemamodeled_object_from_datastore(self):
+        def given(self):
             self.redo("Save a new object into AppEngine datastore")
             self.task = self.results[0]
 
         @when("I modify it")
-        def I_modify_it(self):
+        def whenA(self):
             self.task.title = u"Modified title"
 
         @when("I save it")
-        def I_save_it(self):
+        def whenB(self):
             from shaura_core.interfaces import IObjectManager
             manager = self.layer.config.registry.getUtility(IObjectManager)
             manager.update(self.task)
 
         @then("I can retrieve it from AppEngine datastore again")
-        def I_can_retrieve_it_from_AppEngine_datastore_again(self):
+        def thenA(self):
             from shaura_core.interfaces import IObjectManager
 
             manager = self.layer.config.registry.getUtility(IObjectManager)
@@ -89,27 +89,28 @@ class I_want_to_store_zopeschemamodeled_data_on_AppEngine(unittest.TestCase):
             self.results = tuple(manager(**query))
 
         @then("It has the changes I've made")
-        def It_has_the_changes_Ive_made(self):
+        def thenB(self):
             self.assertEquals(len(self.results), 1)
             self.assertEquals(self.task.key(), self.results[0].key())
             self.assertEquals(self.task.title, self.results[0].title)
+            self.assertTrue(False)
 
     @scenario("Delete a saved object from AppEngine datastore")
-    class Delete_a_saved_object_from_AppEngine_datastore(Scenario):
+    class ScenarioC(Scenario):
 
         @given("I've retrieved a 'zope.schema'-modeled object from datastore")
-        def Ive_retrieved_a_zopeschemamodeled_object_from_datastore(self):
+        def given(self):
             self.redo("Save a new object into AppEngine datastore")
             self.task = self.results[0]
 
         @when("I delete it")
-        def I_delete_it(self):
+        def when(self):
             from shaura_core.interfaces import IObjectManager
             manager = self.layer.config.registry.getUtility(IObjectManager)
             manager.delete(self.task)
 
         @then("I cannot retrieve it from AppEngine datastore anymore")
-        def I_cannot_retrieve_it_from_AppEngine_datastore_anymore(self):
+        def then(self):
             from shaura_core.interfaces import IObjectManager
 
             manager = self.layer.config.registry.getUtility(IObjectManager)
